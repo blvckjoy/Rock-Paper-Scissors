@@ -1,3 +1,10 @@
+// declare variables
+let computerScore = 0;
+let playerScore = 0;
+let roundsPlayed = 0;
+let totalRounds = 5;
+const buttons = document.querySelectorAll("button");
+
 // generates computer choice as either rock, paper, or scissors
 function getComputerChoice() {
   let computer = Math.random();
@@ -9,58 +16,78 @@ function getComputerChoice() {
   return "scissors";
 }
 
-// console.log(getComputerChoice());
-
-// user's prompt to get the input of either rock, paper or scissors
-function getHumanChoice() {
-  return prompt("Pick either rock, paper or scissors").toLowerCase();
-}
-
-// declaring variables
-let humanScore = 0;
-let computerScore = 0;
-let currentRound = 1;
-
-function playGame(round) {
-  if (round > 0) {
-    console.log(`Round ${currentRound}`);
-    playRound(getHumanChoice(), getComputerChoice());
-    console.log(`Human: ${humanScore} | Computer: ${computerScore}`);
-    console.log(`------------------------`);
-    return playGame(round - 1);
-  } else if (humanScore > computerScore) {
-    return console.log(`CONGRATSS! YOU WIN!`);
-  } else if (humanScore < computerScore) {
-    return console.log(`GAME OVER. YOU LOSE!`);
-  }
-  return console.log(`IT'S A TIE!`);
-}
-
-function playRound(humanChoice, computerChoice) {
-  currentRound++;
-
-  if (
-    (humanChoice === "rock" && computerChoice === "scissors") ||
-    (humanChoice === "paper" && computerChoice === "rock") ||
-    (humanChoice === "scissors" && computerChoice === "paper")
+// determine a winner
+function determineWinner(playerChoice, computerChoice) {
+  if (playerChoice === computerChoice) return "TIE";
+  else if (
+    (playerChoice === "rock" && computerChoice === "scissors") ||
+    (playerChoice === "paper" && computerChoice === "rock") ||
+    (playerChoice === "scissors" && computerChoice === "paper")
   ) {
-    humanScore++;
-    return console.log(
-      `You win! You chose ${humanChoice}, Computer chose ${computerChoice}`
-    );
-  } else if (
-    (humanChoice === "rock" && computerChoice === "paper") ||
-    (humanChoice === "paper" && computerChoice === "scissors") ||
-    (humanChoice === "scissors" && computerChoice === "rock")
-  ) {
-    computerScore++;
-    return console.log(
-      `You lose! You chose ${humanChoice}, Computer chose ${computerChoice}`
-    );
-  }
-  return console.log(
-    `It's a tie! You chose ${humanChoice}, Computer chose ${computerChoice}`
-  );
+    return "Player";
+  } else return "Computer";
 }
 
-playGame(5);
+// update score display
+function updateScore() {
+  const scoreDiv = document.querySelector("#score");
+  scoreDiv.textContent = `Player: ${playerScore} - Computer: ${computerScore}`;
+}
+
+// update result for each round
+function updateResult(msg) {
+  const resultDiv = document.querySelector("#result");
+  resultDiv.textContent = msg;
+}
+
+// display final result after 5 rounds
+function endGame() {
+  const gameOverDiv = document.querySelector("#gameOver");
+  if (playerScore > computerScore) {
+    gameOverDiv.textContent =
+      "Game over! Congratulations, you won the overall game. :)";
+  } else if (computerScore > playerScore) {
+    gameOverDiv.textContent =
+      "Game over! Computer wins the overall game.. Try again!";
+  } else {
+    gameOverDiv.textContent = "Game over! The game is a TIE";
+  }
+}
+
+// handles click event
+buttons.forEach(button => {
+  button.addEventListener("click", e => {
+    const playerChoice = e.target.id;
+    console.log(playerChoice);
+
+    if (roundsPlayed >= totalRounds) {
+      updateResult("Game Over! Pls refresh to play again");
+    }
+
+    const computerChoice = getComputerChoice();
+    const winner = determineWinner(playerChoice, computerChoice);
+
+    if (winner === "Player") {
+      playerScore++;
+      updateResult(
+        `You win this round! You chose ${playerChoice} Computer chose ${computerChoice}`
+      );
+    } else if (winner === "Computer") {
+      computerScore++;
+      updateResult(
+        `Computer wins this round! You chose ${playerChoice} Computer chose ${computerChoice}`
+      );
+    } else {
+      updateResult(
+        `This round is a draw! You chose ${playerChoice} Computer also chose ${computerChoice}`
+      );
+    }
+
+    roundsPlayed++;
+    updateScore();
+
+    if (roundsPlayed === totalRounds) {
+      endGame();
+    }
+  });
+});
