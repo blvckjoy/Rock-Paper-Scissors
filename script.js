@@ -58,7 +58,6 @@ function endGame() {
 buttons.forEach(button => {
   button.addEventListener("click", e => {
     const playerChoice = e.target.id;
-    console.log(playerChoice);
 
     if (roundsPlayed >= totalRounds) {
       updateResult("Game Over! Pls refresh to play again");
@@ -70,16 +69,16 @@ buttons.forEach(button => {
     if (winner === "Player") {
       playerScore++;
       updateResult(
-        `You win this round! You chose ${playerChoice} Computer chose ${computerChoice}`
+        `You chose ${playerChoice}, Computer chose ${computerChoice} - You win this round! `
       );
     } else if (winner === "Computer") {
       computerScore++;
       updateResult(
-        `Computer wins this round! You chose ${playerChoice} Computer chose ${computerChoice}`
+        `You chose ${playerChoice}, Computer chose ${computerChoice} - Computer wins this round!`
       );
     } else {
       updateResult(
-        `This round is a draw! You chose ${playerChoice} Computer also chose ${computerChoice}`
+        `You chose ${playerChoice}, Computer also chose ${computerChoice} -  This round is a draw!`
       );
     }
 
